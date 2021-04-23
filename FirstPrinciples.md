@@ -4,11 +4,11 @@
 
 In the late 1990's I was building this constructive goemetry tool, which would intersect planes and find the edges to show; and then they killed 3DFX and Glide; and then Glide became something else entirely.  By this point I had fundamental math like goemetry, trig, calc(123), and beyond that was interesting theory, which was also being developed as fuzzy logic by other people; and I figured I could leave that to everyone else.
 
-This was really whiteroom developed; not intentionally, but it was at the time where dialup existed, but the internet wasn't what it is now.  I took some time to figure out these 'matrix things', which I had been introduced to, but really seemed like a convoluted way to do it when I could just call `multiply(a,b)` and get the answer; Please don't take this as arrogance or ... I mean you could say 'sure he's just lazy' but my parents did teach me to be able to do everything myself before using a calculator to do it, so before using someone elses library, I wanted to develop my own library; and I did.  But my matrices were 90 degrees rotated and even sign inverted from what OpenGL used... so I have to do actually a lot of work to transform my native matrix into opengl; however, my rotation wasn't really built on matrix mutiplication, but rather since I was dealing with 'finitesimal' steps anyway, I could step a rotation around the X Y and Z axis, but do the rotation in every combination of steps, trying to do the most 'opposite' after each other, and I got smooth rotations.  I even wrote https://docs.google.com/document/d/1_6JdZ0VplMFpBeR3QOcV5vhlOGYyn52T4-fITgI6lbc (July 12, 2015) a long document about the differences between A and B because I was entirely disappointed in acutally using stock matrices, preferring to implement my own physics tick; I was still resistant to quaternions, because they would self-denormalize anyway; something was still wrong there somehow.  
+This was really whiteroom developed; not intentionally, but it was at the time where dialup existed, but the internet wasn't what it is now.  I took some time to figure out these 'matrix things', which I had been introduced to, but really seemed like a convoluted way to do it when I could just call `multiply(a,b)` and get the answer; Please don't take this as arrogance or ... I mean you could say 'sure he's just lazy' but my parents did teach me to be able to do everything myself before using a calculator to do it, so before using someone elses library, I wanted to develop my own library; and I did.  But my matrices were 90 degrees rotated and even sign inverted from what OpenGL used... so I have to do a lot of work to transform my native matrix into opengl; however, my rotation wasn't really built on matrix mutiplication, but rather since I was dealing with 'finitesimal' steps anyway, I could step a rotation around the X Y and Z axis, but do the rotation in every combination of steps, trying to do the most 'opposite' after each other, and I got smooth rotations.  I even wrote https://docs.google.com/document/d/1_6JdZ0VplMFpBeR3QOcV5vhlOGYyn52T4-fITgI6lbc (July 12, 2015) a long document about the differences between A and B because I was entirely disappointed in acutally using stock matrices, preferring to implement my own physics tick; I was still resistant to quaternions, because they would self-denormalize anyway; something was still wrong there somehow.  
 
 The short of it is, matrices are just 3 direction vectors, which can be scaled appropriately in a direction.  Rotating a matrix around X is just rotating the Y and Z columns without affecting the X direction vector... When you take the rotation forumla for rotating around `any axis` and apply `(1,0,0)`, `(0,1,0)`,`(0,0,1)` that much becomes quite clear.  So the [implemantaion of rotation](https://github.com/d3x0r/SACK/blob/master/src/vectlib/vectlib.c#L527) that I kept did less work to rotate around a single known axis, than any axis.
 
-Any modification of the unit vectors describing the orientation does not further update the origintation, just causes a skew/untrue representation in 3D linear space.  Matrices are able to express a direction, but they omit the second cover; there could be a rotation that's 180 degrees apart from them that is approached from two different sides, and is not actually the same rotation; although a representation of the resulting matrix has a direction... .... (This is all circular; and isn't going anywhere)
+Any modification of the unit vectors describing the orientation does not further update the origination, just causes a skew/untrue representation in 3D linear space.  Matrices are able to express a direction, but they omit the second cover; there could be a rotation that's 180 degrees apart from them that is approached from two different sides, and is not actually the same rotation; although a representation of the resulting matrix has a direction... .... (This is all circular; and isn't going anywhere)
 
 Matrices are centered at the origin, and assume that a thing will have positive and negative angles, and that +180 = -180.
 
@@ -27,9 +27,9 @@ Further information will be presented about axis angle representation of rotatio
 
 There are (at least) 2 vector spaces, one for linear/directional representation, and one for the orientation and anglar velocity representation.  They have their own independant inertia (law of motion; a thing that is spinning will keep spinning... a going in a direction will continue going in that direction, and neither direction has anything to do with the other; more later).
 
-There are 3 degress of freedom in 2 units of turn and distance.  There's an additional axis which enables freedom in these 2 units. They are not entirely independant vector spaces, through physics thare ways to trasfer part of a coodinte of turn into distance, and vice versa, the current and projected orientation may also modify how a rotation vector is represented in linear space.  
+There are 3 degress of freedom in 2 units of turn and distance.  There's an additional axis which enables freedom in these 2 units. They are not entirely independant vector spaces, through physics there are ways to transfer part of a coordinate of turn into distance, and vice versa, the current and projected orientation may also modify how a rotation vector is represented in linear space.  
 
-By my count, that makes us have a 3D world of, time, momentum, angular momentum.
+By my count, that makes us have a 3D world of: time, momentum, angular momentum.
 
 ### Physical dimension vectors
 
@@ -80,7 +80,7 @@ Rotating a rotating vector performs a co-mutation between the original rotation 
 
 Existing units of physics, mass(g), time(s), distance(m), etc are included.
 
-Additional a unit of 'turns'(t) is added.  This is represented with a 3 component rotation vector which behaves much like a 3D position vector, other than applying changes to evertyhing orthagonal the line from the origin to it.
+Additional a unit of 'turns'(t) is added.  This is represented with a 3 component rotation vector which behaves much like a 3D position vector, other than applying changes to everything orthagonal the line from the origin to it.
 
 
 Units that are multiplied are represented with their letter and a '-'(usually silent and not pronouced) separating them, for example `g-m` is mass times distance.  Units that are divided by other units, a represented by their letters and are separated by a '/' (which is prounouced 'per' usually), for example 'm/s' is distance per time.
@@ -95,11 +95,11 @@ Using this, and replacing into the 'Mass–energy relation' `e=m*c^2` represente
 
 Revisiting the above, the principle dimensional units are time(s), distance(m), and turns(t); the units of mass(g) can be expressed entirely in terms of time, distance and turns.
 
-Time and distance are non-independant values, where you have motion, coordinates of distance are related to time (m/s).  Similary time and turns have a relationship thats a measure of angular velocity (t/s).  
+Time and distance are non-independant values, where you have motion, coordinates of distance are related to time (m/s).  Similarly time and turns have a relationship that's a measure of angular velocity (t/s).  
 
-(?Relationship) of distance and turn  are (multiplied?) to find an angular distance or arc-length per time traveled.
+(?Relationship) of distance and turn are (multiplied?) to find an angular distance or arc-length per time traveled.
 
-Accelerations can happen either because of a transfer of distance to turn (throwing a ball into a water-sheel that can catch the ball's momentum and turn it into angular velocity), or turn to distance, 
+Accelerations can happen either because of a transfer of distance to turn (throwing a ball into a water-sheel that can catch the balls' momentum and turn it into angular velocity), or turn to distance.
 
 Photons transmit turns(an acceleration of torque) between principle entities.  It goes from an angular speed, to a linear transmission, and results in an acceleration of turns when interacting at a targer.
 
